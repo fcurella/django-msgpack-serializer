@@ -1,8 +1,12 @@
-## msgpack_serializer
+==================
+msgpack_serializer
+==================
 
-Provides a [msgpack](http://msgpack.org) serializer/deserializer for Django models instances.
+Provides a msgpack_ serializer/deserializer for Django models instances.
 
-### Installation
+------------
+Installation
+------------
 
 Add the module `msgpack_serializer.serializer` to your `SERIALIZATION_MODULES` setting:
 
@@ -12,7 +16,9 @@ Add the module `msgpack_serializer.serializer` to your `SERIALIZATION_MODULES` s
         "msgpack" : "msgpack_serializer.serializer",
     }
 
-### Usage
+-----
+Usage
+-----
 
 To serialize:
 
@@ -32,3 +38,5 @@ To deserialize:
 
     deserialized_objects = serializers.deserialize('msgpack', data)
     objs = [deserialized.object for deserialized in deserialized_objects]
+
+.. _msgpack: http://msgpack.org
