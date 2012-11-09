@@ -2,7 +2,6 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.utils import timezone
-#from demoapp.models import DatetimeModel
 
 
 class SimpleTest(TestCase):
