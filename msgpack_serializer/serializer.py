@@ -37,7 +37,7 @@ def Deserializer(stream_or_string):
 
 class DjangoMsgPack(object):
     DATE_FORMAT = "%Y-%m-%d"
-    TIME_FORMAT = "%H:%M:%S.%f%Z"
+    TIME_FORMAT = "%H:%M:%S.%f"
 
 
 class DjangoMsgPackEncoder(DjangoMsgPack):
