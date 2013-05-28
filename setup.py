@@ -13,7 +13,7 @@ requirements = [
 ]
 
 setup(
-    name = "django msgpack serializer",
+    name = "django-msgpack-serializer",
     version = ".".join(map(str, __version__)),
     description = "A MsgPack serializer for Django.",
     long_description = read('README.rst'),
