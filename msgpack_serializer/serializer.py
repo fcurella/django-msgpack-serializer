@@ -4,34 +4,43 @@ Serialize data to/from MsgPack
 
 import datetime
 import decimal
-from StringIO import StringIO
+from io import BytesIO, StringIO
 
-from django.core.serializers.python import Serializer as PythonSerializer
-from django.core.serializers.python import Deserializer as PythonDeserializer
-from django.utils import datetime_safe
 import msgpack
+from django.core.serializers.python import Deserializer as PythonDeserializer
+from django.core.serializers.python import Serializer as PythonSerializer
+from django.utils import datetime_safe
 
 
 class Serializer(PythonSerializer):
     """
     Convert a queryset to msgpack.
     """
+
     internal_use_only = False
+    stream_class = BytesIO
 
     def end_serialization(self):
-        msgpack.pack(self.objects, self.stream, default=DjangoMsgPackEncoder().encode, **self.options)
+        msgpack.pack(
+            self.objects,
+            self.stream,
+            default=DjangoMsgPackEncoder().encode,
+            **self.options
+        )
 
     def getvalue(self):
-        if callable(getattr(self.stream, 'getvalue', None)):
+        if callable(getattr(self.stream, "getvalue", None)):
             return self.stream.getvalue()
 
 
-def Deserializer(stream_or_string):
-    if isinstance(stream_or_string, basestring):
-        stream = StringIO(stream_or_string)
+def Deserializer(stream_or_bytes):
+    if isinstance(stream_or_bytes, bytes):
+        stream = BytesIO(stream_or_bytes)
     else:
-        stream = stream_or_string
-    for obj in PythonDeserializer(msgpack.unpack(stream, object_hook=DjangoMsgPackDecoder().decode)):
+        stream = stream_or_bytes
+    for obj in PythonDeserializer(
+        msgpack.unpack(stream, object_hook=DjangoMsgPackDecoder().decode)
+    ):
         yield obj
 
 
@@ -59,19 +68,22 @@ class DjangoMsgPackEncoder(DjangoMsgPack):
 
     def encode_datetime(self, obj):
         d = datetime_safe.new_datetime(obj)
-        return {'__class__': 'datetime', 'as_str': d.strftime("%s %s" % (self.DATE_FORMAT, self.TIME_FORMAT))}
+        return {
+            "__class__": "datetime",
+            "as_str": d.strftime("%s %s" % (self.DATE_FORMAT, self.TIME_FORMAT)),
+        }
 
     def encode_date(self, obj):
         d = datetime_safe.new_date(obj)
-        return {'__class__': 'date', 'as_str': d.strftime(self.DATE_FORMAT)}
+        return {"__class__": "date", "as_str": d.strftime(self.DATE_FORMAT)}
 
     def encode_time(self, obj):
         if isinstance(obj, datetime.datetime):
-            return {'__class__': 'time', 'as_str': obj.strftime(self.TIME_FORMAT)}
+            return {"__class__": "time", "as_str": obj.strftime(self.TIME_FORMAT)}
         return obj
 
     def encode_decimal(self, obj):
-        return {'__class__': 'decimal', 'as_str': str(obj)}
+        return {"__class__": "decimal", "as_str": str(obj)}
 
 
 class DjangoMsgPackDecoder(DjangoMsgPack):
@@ -80,13 +92,15 @@ class DjangoMsgPackDecoder(DjangoMsgPack):
     """
 
     def decode(self, obj):
-        if '__class__' in obj:
-            decode_func = getattr(self, 'decode_%s' % obj['__class__'])
+        if "__class__" in obj:
+            decode_func = getattr(self, "decode_%s" % obj["__class__"])
             return decode_func(obj)
         return obj
 
     def decode_datetime(self, obj):
-        return datetime.datetime.strptime(obj["as_str"], "%s %s" % (self.DATE_FORMAT, self.TIME_FORMAT))
+        return datetime.datetime.strptime(
+            obj["as_str"], "%s %s" % (self.DATE_FORMAT, self.TIME_FORMAT)
+        )
 
     def decode_date(self, obj):
         return datetime.datetime.strptime(obj["as_str"], self.DATE_FORMAT)
