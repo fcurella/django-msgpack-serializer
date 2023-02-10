@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Setup pip cache
+    - name: Setup cache
       uses: actions/cache@v3
       id: pipcache
       with:
         path: |
           ~/.cache/pip
           ~/.cache/pypoetry
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/poetry.lock') }}
+        key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
         restore-keys: |
           ${{ runner.os }}-poetry
     - name: Set up Python ${{ matrix.python-version }}
@@ -45,14 +45,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Setup pip cache
+    - name: Setup cache
       uses: actions/cache@v3
       id: pipcache
       with:
         path: |
           ~/.cache/pip
           ~/.cache/pypoetry
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/poetry.lock') }}
+        key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
         restore-keys: |
           ${{ runner.os }}-poetry
     - name: Set up Python
@@ -78,14 +78,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Setup pip cache
+    - name: Setup cache
       uses: actions/cache@v3
       id: pipcache
       with:
         path: |
           ~/.cache/pip
           ~/.cache/pypoetry
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/poetry.lock') }}
+        key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
         restore-keys: |
           ${{ runner.os }}-poetry
     - name: Set up Python ${{ matrix.python-version }}
