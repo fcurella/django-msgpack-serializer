@@ -9,7 +9,6 @@ from io import BytesIO
 import msgpack
 from django.core.serializers.python import Deserializer as PythonDeserializer
 from django.core.serializers.python import Serializer as PythonSerializer
-from django.utils import datetime_safe
 
 
 class Serializer(PythonSerializer):
@@ -67,15 +66,13 @@ class DjangoMsgPackEncoder(DjangoMsgPack):
             return o
 
     def encode_datetime(self, obj):
-        d = datetime_safe.new_datetime(obj)
         return {
             "__class__": "datetime",
-            "as_str": d.strftime("%s %s" % (self.DATE_FORMAT, self.TIME_FORMAT)),
+            "as_str": obj.strftime("%s %s" % (self.DATE_FORMAT, self.TIME_FORMAT)),
         }
 
     def encode_date(self, obj):
-        d = datetime_safe.new_date(obj)
-        return {"__class__": "date", "as_str": d.strftime(self.DATE_FORMAT)}
+        return {"__class__": "date", "as_str": obj.strftime(self.DATE_FORMAT)}
 
     def encode_time(self, obj):
         if isinstance(obj, datetime.datetime):
