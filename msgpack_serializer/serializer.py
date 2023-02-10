@@ -4,7 +4,7 @@ Serialize data to/from MsgPack
 
 import datetime
 import decimal
-from io import BytesIO, StringIO
+from io import BytesIO
 
 import msgpack
 from django.core.serializers.python import Deserializer as PythonDeserializer
