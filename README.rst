@@ -27,7 +27,7 @@ To serialize:
     from django.core import serializers
 
     msgpack_serializer = serializers.get_serializer("msgpack")()
-    data = msgpack_serializer.serialize(my_objects)
+    data = msgpack_serializer.serialize(my_objects)  # returns bytes
 
 
 To deserialize:
